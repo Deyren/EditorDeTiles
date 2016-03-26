@@ -44,8 +44,8 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
         panelParaCanvas.add(pan, BorderLayout.CENTER);
         //spinnerFilas.setValue(1);
         comboFormato.removeAllItems();
-        comboFormato.addItem("jpg");
         comboFormato.addItem("png");
+        comboFormato.addItem("jpg");
         comboFormato.addItem("bmp");
         
         spinnerFilas.setEnabled(false);
@@ -82,7 +82,7 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
         panelParaCanvas.setLayout(panelParaCanvasLayout);
         panelParaCanvasLayout.setHorizontalGroup(
             panelParaCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 478, Short.MAX_VALUE)
+            .addGap(0, 488, Short.MAX_VALUE)
         );
         panelParaCanvasLayout.setVerticalGroup(
             panelParaCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,7 +188,7 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboFormato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 385, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 407, Short.MAX_VALUE)
                 .addComponent(btnGuardar)
                 .addContainerGap())
         );
@@ -200,17 +200,12 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelParaCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(panelParaCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelParaCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelParaCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -252,7 +247,7 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
     }//GEN-LAST:event_spinnerFilasStateChanged
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        // TODO add your handling code here:
+        // TODO Guarda la imagen
 
         ArrayList<ObjetoImagen> imagenes = pan.getSusImagenes();
         int anchoBuffer = 0, altoBuffer = 0;
@@ -277,9 +272,9 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
             }
             i++;
         }
-         altoBuffer += imagenMasAlta;
-        System.out.println("Ancho total: " + anchoTotal);
-        System.out.println("Alto total: " + altoBuffer);
+        altoBuffer += imagenMasAlta;
+       // System.out.println("Ancho total: " + anchoTotal);
+       // System.out.println("Alto total: " + altoBuffer);
         String formatoSeleccionado = (String) comboFormato.getSelectedItem();
         BufferedImage b;
         if (formatoSeleccionado.equals("png")) {
