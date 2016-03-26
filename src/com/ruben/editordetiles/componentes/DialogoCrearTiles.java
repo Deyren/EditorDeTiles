@@ -42,8 +42,14 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
         pan = new PanelConImagenes(checkMostrarMatriz);
         panelParaCanvas.setLayout(new BorderLayout());
         panelParaCanvas.add(pan, BorderLayout.CENTER);
-        spinnerFilas.setValue(1);
+        //spinnerFilas.setValue(1);
+        comboFormato.removeAllItems();
+        comboFormato.addItem("jpg");
+        comboFormato.addItem("png");
+        comboFormato.addItem("bmp");
         
+        spinnerFilas.setEnabled(false);
+        comboFormato.setEnabled(false);
     }
 
     /**
@@ -63,7 +69,9 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         checkMostrarMatriz = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        comboFormato = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Crear tile a partir de un conjunto de imagenes");
@@ -92,6 +100,7 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 255)));
 
+        spinnerFilas.setValue(1);
         spinnerFilas.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 spinnerFilasStateChanged(evt);
@@ -131,12 +140,16 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
 
         jLabel1.setText("Seleccionar archivos");
 
-        jButton1.setText("Guardar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
+
+        comboFormato.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel3.setText("Formato de salida");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -153,7 +166,11 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(checkMostrarMatriz)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(comboFormato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -167,8 +184,12 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(checkMostrarMatriz)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 412, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboFormato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 385, Short.MAX_VALUE)
+                .addComponent(btnGuardar)
                 .addContainerGap())
         );
 
@@ -201,13 +222,14 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
         File[] files = Utiles.seleccionDeArchivos(this);
         if (files != null) {
             pan.getSusImagenes().clear();
-
             for (File file : files) {
                 pan.addImagen(file);
             }
             pan.cantidadDeImagenes = files.length;
         }
         pan.repaint();
+        spinnerFilas.setEnabled(true);
+        comboFormato.setEnabled(true);
 
     }//GEN-LAST:event_btnSeleccionarImagenesActionPerformed
 
@@ -217,15 +239,68 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
     }//GEN-LAST:event_checkMostrarMatrizStateChanged
 
     private void spinnerFilasStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnerFilasStateChanged
+       
+       int val=(int)spinnerFilas.getValue();
+       if(val<1){
+           spinnerFilas.setValue(1);
+       }
+       if(val>pan.cantidadDeImagenes){
+           spinnerFilas.setValue(pan.cantidadDeImagenes);
+       }
+       
         pan.repaint();
     }//GEN-LAST:event_spinnerFilasStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
-         
-    }//GEN-LAST:event_jButton1ActionPerformed
 
-    
+        ArrayList<ObjetoImagen> imagenes = pan.getSusImagenes();
+        int anchoBuffer = 0, altoBuffer = 0;
+        int imagenMasAlta = 0;
+        int anchoTotal = 0;
+        int i=0;
+        for (ObjetoImagen imagen : imagenes) {
+            if (imagenMasAlta < imagen.suImagen.getHeight()) {
+                imagenMasAlta = imagen.suImagen.getHeight();
+            }
+            if (i < (int) spinnerFilas.getValue()) {
+                anchoBuffer += imagen.suImagen.getWidth();
+            } else {
+                if (anchoTotal < anchoBuffer) {
+                    anchoTotal = anchoBuffer;
+                }
+                altoBuffer += imagenMasAlta;
+               // System.out.println(altoBuffer);
+                imagenMasAlta = 0;
+                anchoBuffer = 0;
+                i=0;
+            }
+            i++;
+        }
+         altoBuffer += imagenMasAlta;
+        System.out.println("Ancho total: " + anchoTotal);
+        System.out.println("Alto total: " + altoBuffer);
+        String formatoSeleccionado = (String) comboFormato.getSelectedItem();
+        BufferedImage b;
+        if (formatoSeleccionado.equals("png")) {
+            b = new BufferedImage(anchoTotal, altoBuffer, BufferedImage.TYPE_INT_ARGB);
+        } else {
+            b = new BufferedImage(anchoTotal, altoBuffer, BufferedImage.TYPE_INT_RGB);
+        }
+
+        Graphics g = b.getGraphics();
+        for (ObjetoImagen imagen : imagenes) {
+            g.drawImage(imagen.suImagen, imagen.suRectangulo.getX() - pan.posXDeLaMatrix, imagen.suRectangulo.getY() - pan.posYDeLaMatriz, null);
+        }
+        try {
+            File f = Utiles.guardarArchivo(this);
+            if (f != null) {
+                ImageIO.write(b, formatoSeleccionado, f);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(DialogoCrearTiles.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -270,23 +345,22 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnSeleccionarImagenes;
     private javax.swing.JCheckBox checkMostrarMatriz;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox comboFormato;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelParaCanvas;
     private javax.swing.JSpinner spinnerFilas;
     // End of variables declaration//GEN-END:variables
 
+    class PanelConImagenes extends JPanel {
 
-       
-
-     class PanelConImagenes extends JPanel {
-
-        private int posXDeLaMatrix, posYDeLaMatriz;
+        int posXDeLaMatrix, posYDeLaMatriz;
         private ArrayList<ObjetoImagen> susImagenes;
         private JCheckBox checkDePadreMostrarMatriz;
         private int cantidadDeImagenes;
@@ -324,10 +398,10 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
                     if (e.isControlDown()) {
                         posXDeLaMatrix += e.getWheelRotation() * -50;
                     } else if (e.isAltDown()) {
-                        Dimension d=DialogoCrearTiles.PanelConImagenes.this.getSize();
-                        d.setSize(d.getWidth()+e.getWheelRotation() * 50, d.getHeight()+e.getWheelRotation() * 50);
-                        Point p= DialogoCrearTiles.PanelConImagenes.this.getLocation();
-                        p.setLocation(p.getX()+e.getWheelRotation() * -50, p.getY()+e.getWheelRotation() * -50);
+                        Dimension d = DialogoCrearTiles.PanelConImagenes.this.getSize();
+                        d.setSize(d.getWidth() + e.getWheelRotation() * 50, d.getHeight() + e.getWheelRotation() * 50);
+                        Point p = DialogoCrearTiles.PanelConImagenes.this.getLocation();
+                        p.setLocation(p.getX() + e.getWheelRotation() * -50, p.getY() + e.getWheelRotation() * -50);
                         // DialogoCrearTiles.PanelConImagenes.this.setSize(d);
                     } else {
                         posYDeLaMatriz += e.getWheelRotation() * -50;
@@ -341,8 +415,12 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
         public void paint(Graphics g) {
             super.paint(g);
             int posX = 0, posY = 0;
-            int tilesEnX=0;
+            int tilesEnX = 0;
+            int imagenMasAlta = 0;
             for (ObjetoImagen oi : susImagenes) {
+                if (imagenMasAlta < oi.getSuRectangulo().getAlto()) {
+                    imagenMasAlta = oi.getSuRectangulo().getAlto();
+                }
                 oi.getSuRectangulo().setX(posX + posXDeLaMatrix);
                 oi.getSuRectangulo().setY(posY + posYDeLaMatriz);
                 g.drawImage(oi.getSuImagen(), posX + posXDeLaMatrix, posY + posYDeLaMatriz, oi.getSuRectangulo().getAncho(), oi.getSuRectangulo().getAlto(), null);
@@ -351,18 +429,18 @@ public class DialogoCrearTiles extends javax.swing.JDialog {
 
                 }
 
-               tilesEnX++;
-                if(tilesEnX>=(int)spinnerFilas.getValue()){
-                    posX=0;
-                    tilesEnX=0;
-                    posY += oi.getSuRectangulo().getAlto();
-                }else{
-                     posX += oi.getSuRectangulo().getAncho();
+                tilesEnX++;
+                if (tilesEnX >= (int) spinnerFilas.getValue()) {
+                    posX = 0;
+                    tilesEnX = 0;
+                    posY += imagenMasAlta;
+                    imagenMasAlta = 0;
+                } else {
+                    posX += oi.getSuRectangulo().getAncho();
                 }
 
             }
 
-            
         }
 
     }

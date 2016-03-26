@@ -55,7 +55,7 @@ public class Utiles {
     private static final ArrayList<Imagen> ImagenesQueHay = new ArrayList();
     private static final ArrayList<SpriteDeVariasTiles> ImagenesDeVariosTiles = new ArrayList<>();
     // private static String rutaActual = "C:\\Users\\pedruben\\Desktop\\VARIOS (No mover ni cambiar el nombre)\\imagenes\\imagenes para 3dmax";
-    private static String rutaActual = "C:/Users/pedruben/Documents/My Web Sites/Sesiones/imagenes/imagenesDe_r";
+    private static String rutaActual = "C:\\Downloads\\tiles\\castle";
 
     /**
      * Se le pasa un archivo, comprueba si coincide con el primer sprite de
@@ -643,7 +643,7 @@ public class Utiles {
         int r = jfc.showSaveDialog(c);
         if (r == JFileChooser.APPROVE_OPTION) {
             Fsalida = jfc.getSelectedFile();
-            System.out.println(Fsalida.getAbsoluteFile());
+            //System.out.println(Fsalida.getAbsoluteFile());
         }
 
         return Fsalida;
